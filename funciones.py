@@ -27,7 +27,7 @@ def imprimir_menu():
     """
     Esta función imprime un menú con 21 opciones y una opción de salida.
     """
-    menu = "\n1 - Mostrar la lista de todos los jugadores del Dream Team\n2 - Seleccionar indice y mostrar jugador\n3 - Guardar jugador mostrado en la opcion 2\n4 - Buscar jugador y mostrar logros\n5 - Mostrar promedio de puntos por partido del Dream Team de forma ascendente\n6 - Buscar jugador y ver si pertenece al Salon de la Fama del Baloncesto\n7 - Mostar jugador con la mayor cantidad de rebotes totales\n8 - Mostrar jugador con el mayor porcentaje de tiros de campo\n9 - Mostrar jugador con la mayor cantidad de asistencias totales\n10 - Ingresar un valor y mostrar los jugadores que han promediado más puntos por partido que ese valor.\n11 - Ingresar un valor y mostrar los jugadores que han promediado más rebotes por partido que ese valor.\n12 - Ingresar un valor y mostrar los jugadores que han promediado más asistencias por partido que ese valor\n13 - Mostrar el jugador con la mayor cantidad de robos totales.\n14 - Mostrar el jugador con la mayor cantidad de bloqueos totales.\n15 - Ingresar un valor y mostrar los jugadores que hayan tenido un porcentaje de tiros libres superior a ese valor.\n16 - Mostrar el promedio de puntos por partido del equipo excluyendo al jugador con la menor cantidad de puntos por partido\n17 - Mostrar el jugador con la mayor cantidad de logros obtenidos.\n18 - Ingresar un valor y mostrar los jugadores que hayan tenido un porcentaje de tiros triples superior a ese valor.\n19 - Mostrar el jugador con la mayor cantidad de temporadas jugadas.\n20 - Ingresar un valor y mostrar los jugadores , ordenados por posición en la cancha, que hayan tenido un porcentaje de tiros de campo superior a ese valor.\n23 - Crear archivo csv con el ranking de jugadores.\n0 - Salir"
+    menu = "\n1 - Mostrar la lista de todos los jugadores del Dream Team\n2 - Seleccionar indice y mostrar jugador\n3 - Guardar jugador mostrado en la opcion 2\n4 - Buscar jugador y mostrar logros\n5 - Mostrar promedio de puntos por partido del Dream Team de forma ascendente\n6 - Buscar jugador y ver si pertenece al Salon de la Fama del Baloncesto\n7 - Mostar jugador con la mayor cantidad de rebotes totales\n8 - Mostrar jugador con el mayor porcentaje de tiros de campo\n9 - Mostrar jugador con la mayor cantidad de asistencias totales\n10 - Ingresar un valor y mostrar los jugadores que han promediado más puntos por partido que ese valor.\n11 - Ingresar un valor y mostrar los jugadores que han promediado más rebotes por partido que ese valor.\n12 - Ingresar un valor y mostrar los jugadores que han promediado más asistencias por partido que ese valor\n13 - Mostrar el jugador con la mayor cantidad de robos totales.\n14 - Mostrar el jugador con la mayor cantidad de bloqueos totales.\n15 - Ingresar un valor y mostrar los jugadores que hayan tenido un porcentaje de tiros libres superior a ese valor.\n16 - Mostrar el promedio de puntos por partido del equipo excluyendo al jugador con la menor cantidad de puntos por partido\n17 - Mostrar el jugador con la mayor cantidad de logros obtenidos.\n18 - Ingresar un valor y mostrar los jugadores que hayan tenido un porcentaje de tiros triples superior a ese valor.\n19 - Mostrar el jugador con la mayor cantidad de temporadas jugadas.\n20 - Ingresar un valor y mostrar los jugadores , ordenados por posición en la cancha, que hayan tenido un porcentaje de tiros de campo superior a ese valor.\n23 - Crear archivo csv con el ranking de jugadores.\n24 - Determinar la cantidad de jugadores que hay por cada posición\n25 - Mostrar la lista de jugadores ordenadas por la cantidad de All-Star de forma descendente\n26 - Determinar qué jugador tiene las mejores estadísticas en cada valor.\n27 - Determinar qué jugador tiene las mejores estadísticas de todos.\n0 - Salir"
     print(menu)
 
 
@@ -44,7 +44,7 @@ def validar_opcion() -> int:
     while True:
         ingresar_opcion = input("\nIngrese una opción: ")
 
-        if re.match(r"^(?:[1-9]|1[0-9]|20|23)$", ingresar_opcion):
+        if re.match(r"^(?:[0-9]|1[0-9]|20|2[3-7])$", ingresar_opcion):
             return int(ingresar_opcion)
 
         else:
@@ -99,14 +99,21 @@ def principal():
             case 18:
                 mayor_que_el_valor(lista_jugadores, "porcentaje_tiros_triples")
             case 19:
-                calcular_maximo(lista_jugadores, "temporadas")
+                calcular_maximo_temporadas(lista_jugadores, "temporadas")
             case 20:
                 mayor_que_el_valor_por_posicion(
                     lista_jugadores, "porcentaje_tiros_de_campo"
                 )
             case 23:
                 guardar_jugadores_en_csv(lista_jugadores, archivo_csv)
-
+            case 24:
+                contar_jugadores_por_posicion(lista_jugadores)
+            case 25:
+                ordenar_por_all_star(lista_jugadores)
+            case 26:
+                calcular_mejores_estadisticas(lista_jugadores)
+            case 27:
+                calcular_mejor_jugador(lista_jugadores)
             case 0:
                 break
 
@@ -304,7 +311,7 @@ def miembro_salon_de_la_fama(lista_jugadores: list) -> bool:
     return False
 
 
-# 7 - 8 - 9 - 13 - 14 - 19
+# 7 - 8 - 9 - 13 - 14 
 def calcular_maximo(lista_jugadores: list, dato: str) -> dict:
     """
     La función calcula el jugador con el valor más alto para una estadística dada en una lista de
@@ -460,6 +467,44 @@ def mas_logros_obtenidos(lista_jugadores: list) -> dict:
 
     return jugador_maximo
 
+#19
+def calcular_maximo_temporadas(lista_jugadores: list, dato: str) -> list:
+    """
+    La función calcula los dos jugadores con el valor más alto para una estadística dada en una lista de
+    jugadores y devuelve una lista de diccionarios con la información de los jugadores.
+
+    Args:
+        lista_jugadores: Una lista de diccionarios que representan a diferentes jugadores y sus estadísticas.
+        dato: Un parámetro de cadena que representa la estadística específica para la que queremos encontrar
+              el valor máximo en la lista de jugadores. Se utiliza para acceder al valor correspondiente en
+              el diccionario de estadísticas de cada jugador.
+
+    Returns:
+        Una lista de diccionarios que contiene los dos jugadores con el valor más alto para la estadística dada
+        (especificada por el parámetro "dato") entre la lista de jugadores (especificada por el parámetro
+        "lista_jugadores").
+    """
+    jugadores_maximos = []
+    datos_maximos = [0, 0] 
+    for jugador in lista_jugadores:
+        dato_actual = jugador["estadisticas"][dato]
+        if dato_actual > datos_maximos[0]:
+            datos_maximos = [dato_actual, datos_maximos[0]]
+            jugadores_maximos = [jugador]
+        elif dato_actual > datos_maximos[1]:
+            datos_maximos[1] = dato_actual
+            jugadores_maximos.append(jugador)
+
+    dato_normalizado = quitar_guiones_bajos(dato)
+    for  jugador in jugadores_maximos:
+        print("Jugador  con más {0}: {1} con {2}".format(
+            
+            dato_normalizado,
+            jugador["nombre"],
+            jugador["estadisticas"][dato]
+        ))
+
+    return jugadores_maximos
 
 # 20
 def mayor_que_el_valor_por_posicion(lista_jugadores: list, dato: str) -> str:
@@ -526,11 +571,25 @@ def guardar_jugadores_en_csv(lista_jugadores, archivo_csv):
             "Robos",
             "Bloqueos",
         ]
-        linea_encabezado = "        | ".join(encabezado)
+        max_len_nombre = 0
+        for jugador in lista_jugadores:
+            nombre_len = len(jugador["nombre"])
+            if nombre_len > max_len_nombre:
+                max_len_nombre = nombre_len
+                
+        linea_encabezado = "".join(["-" * (max_len_nombre + 2)] + ["-" * 14] * len(encabezado)) 
+        archivo.write(linea_encabezado + "\n")
+        
+        encabezado_format = "| {0:<{1}} ".format(encabezado[0], max_len_nombre)
+        for columna in encabezado[1:]:
+            encabezado_format += "| {0:<13} ".format(columna)
+        encabezado_format += "|"
+        archivo.write(encabezado_format + "\n")
+        
         archivo.write(linea_encabezado + "\n")
 
         for jugador, estadisticas in ranking.items():
-            linea_jugador = jugador + " " * (18 - len(jugador)) + "|"
+            linea_jugador = "| {0:<{1}} ".format(jugador, max_len_nombre)
 
             for key in [
                 "puntos_totales",
@@ -541,12 +600,127 @@ def guardar_jugadores_en_csv(lista_jugadores, archivo_csv):
             ]:
                 if key in estadisticas:
                     valor = str(estadisticas[key])
-                    linea_jugador += " " + valor + " " * (13 - len(valor)) + "|"
+                    linea_jugador += "| {0:<13} ".format(valor)
                 else:
-                    linea_jugador += " " + "-" + " " * 11 + "|"
+                    linea_jugador += "| {0:<13} ".format("-")
 
-            linea_jugador += "\n"
-            archivo.write(linea_jugador)
+            linea_jugador += "|"
+            archivo.write(linea_jugador + "\n")
+
+        archivo.write(linea_encabezado + "\n")
+
+
+            
+def contar_jugadores_por_posicion(lista_jugadores: list) -> dict:
+    """
+    La función cuenta la cantidad de jugadores por posición en una lista de jugadores y devuelve un diccionario
+    con la información.
+
+    Args:
+        lista_jugadores: Una lista de diccionarios que representan a diferentes jugadores.
+
+    Returns:
+        Un diccionario que contiene la cantidad de jugadores por posición.
+    """
+    jugadores_por_posicion = {}
+    for jugador in lista_jugadores:
+        posicion = jugador["posicion"]
+        if posicion in jugadores_por_posicion:
+            jugadores_por_posicion[posicion] += 1
+        else:
+            jugadores_por_posicion[posicion] = 1
+
+    for posicion, cantidad in jugadores_por_posicion.items():
+        print("{0}: {1}".format(posicion, cantidad))
+    return jugadores_por_posicion
+
+
+
+def contar_all_star(logros):
+    """
+    La función cuenta el número de veces que aparece "All-Star" en una lista de logros.
+
+    Args:
+        logros: Una lista de cadenas que representan logros o premios ganados por un jugador.
+
+    Returns:
+        El número de veces que aparece la cadena "All-Star" en la lista de logros.
+    """
+    contador = 0
+    for logro in logros:
+        if "All-Star" in logro:
+            partes = logro.split()
+            numero = int(partes[0])
+            contador += numero
+    return contador
+
+def ordenar_por_all_star(lista_jugadores: list) -> list:
+    """
+    La función ordena la lista de jugadores por la cantidad de All-Star de forma descendente y devuelve
+    la lista ordenada.
+
+    Args:
+        lista_jugadores: Una lista de diccionarios que representan a diferentes jugadores.
+
+    Returns:
+        Una lista de diccionarios que contiene los jugadores ordenados por la cantidad de All-Star de forma descendente.
+    """
+    rango = len(lista_jugadores)
+
+    for indice in range(rango - 1):
+        max_indice = indice
+        max_all_star = contar_all_star(lista_jugadores[indice]["logros"])
+
+        for indice_dos in range(indice + 1, rango):
+            contador_all_star = contar_all_star(lista_jugadores[indice_dos]["logros"])
+            if contador_all_star > max_all_star:
+                max_indice = indice_dos
+                max_all_star = contador_all_star
+
+        if max_indice != indice:
+            lista_jugadores[indice], lista_jugadores[max_indice] = lista_jugadores[max_indice], lista_jugadores[indice]
+
+    for jugador in lista_jugadores:
+        nombre = jugador["nombre"]
+        all_star_contador = contar_all_star(jugador["logros"])
+        print("{0}: ({1} veces All-Star)".format(nombre, all_star_contador))
+
+    return lista_jugadores
+
+def calcular_mejores_estadisticas(lista_jugadores: list):
+    """
+    La función calcula y muestra por pantalla los jugadores con las mejores estadísticas en cada valor.
+
+    Args:
+        lista_jugadores: Una lista de diccionarios que representan a diferentes jugadores y sus estadísticas.
+    """
+    estadisticas = ["temporadas", "puntos_totales", "promedio_puntos_por_partido", "rebotes_totales", "promedio_rebotes_por_partido", "asistencias_totales", "promedio_asistencias_por_partido", "robos_totales", "bloqueos_totales", "porcentaje_tiros_de_campo", "porcentaje_tiros_libres", "porcentaje_tiros_triples"]
+
+    for estadistica in estadisticas:
+        jugador_maximo = calcular_maximo(lista_jugadores, estadistica)
+        dato_normalizado = quitar_guiones_bajos(estadistica)
+        
+def calcular_mejor_jugador(lista_jugadores: list) -> dict:
+    """
+    La función calcula el jugador con las mejores estadísticas de todos y devuelve un diccionario con la información del jugador.
+
+    Args:
+        lista_jugadores: Una lista de diccionarios que representan a diferentes jugadores y sus estadísticas.
+
+    Returns:
+        Un diccionario que contiene el jugador con las mejores estadísticas de todos.
+    """
+    jugador_mejor = None
+    mejor_estadistica = None
+
+    for jugador in lista_jugadores:
+        estadisticas_jugador = jugador["estadisticas"]
+        for estadistica, valor in estadisticas_jugador.items():
+            if jugador_mejor is None or valor > jugador_mejor["estadisticas"][mejor_estadistica]:
+                jugador_mejor = jugador
+                mejor_estadistica = estadistica
+    print("El jugador con mejores estadísticas es: {0}".format(jugador_mejor["nombre"]))
+    return jugador_mejor
 
 
 nombre_archivo = r"C:\Users\Rodrigo\Documents\PROGRAMACIÓN_I\Primer_Parcial\dt.json"
